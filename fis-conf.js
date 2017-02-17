@@ -20,6 +20,14 @@ var prod = {
 	domain: 'http://oss-static.detu.com', //资源域名
 	static: '/assets/prod-' + version + '/$0',
 };
+
+
+// DOC 文件夹不发布
+fis.match("docs/**", {
+	release: false
+});
+
+
 // 所有的文件产出到 output/ 目录下
 fis.match('*', {
 	release: '/assets/$0'
@@ -60,9 +68,14 @@ fis.match('/src/**.js', {
  * scss解析
  */
 fis.match('**.scss', {
-	parser: fis.plugin('node-sass'),
-	isCssLike: true,
-	rExt: '.css'
+	rExt: '.css',
+	parser: fis.plugin('node-sass', {
+		//include_paths: ['modules/css', 'node_modules'] // 加入文件查找目录
+	}),
+	postprocessor: fis.plugin('autoprefixer', {
+		browsers: ['> 1% in CN', "last 2 versions", "IE >= 8"] // pc
+		// browsers: ["Android >= 4", "ChromeAndroid > 1%", "iOS >= 6"] // wap
+	})
 });
 
 /**
